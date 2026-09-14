@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR·비즈니스 다이제스트 — 2026-09-14</title>
+<!--
+  실행 메모 (모호성/이상 상황 기록, SKILL.md 절차 8·9번 관련):
+  이번 실행 환경에서는 WebFetch 도구가 이 다이제스트에 필요한 모든 대상 도메인
+  (shrm.org, mercer.com, gartner.com, linkedin.com, deloitte.com, weforum.org,
+  cipd.org, hbr.org, mckinsey.com, bcg.com, sloanreview.mit.edu, 그리고 대체
+  경로로 검토한 bloomberg.com, reuters.com, fortune.com, apnews.com,
+  en.wikipedia.org 등)에 대해 네트워크 egress 정책으로 전면 차단되어
+  ("EGRESS_BLOCKED" 오류) 있었다. WebSearch는 정상 동작했지만, SKILL.md 절차
+  3번/저작권 안전 설계 원칙에 따라 검색 스니펫만으로는 발행일·본문을 검증한
+  것으로 간주하지 않는다. 따라서 이번 실행에서는 Track A/B 모두 신뢰성
+  게이트를 통과한 후보가 0건이다. 이는 "기준 미달"이 아니라 "이번 실행
+  환경에서 원문 검증 자체가 불가능했다"는 도구/환경 문제이므로, 실제로 확인한
+  것처럼 요약이나 단어장 예문을 지어내지 않고 있는 그대로 보고한다. (도영·윤슬
+  기준에 따른 가장 보수적인 선택)
+-->
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card-bg: #ffffff;
+    --text: #1f2328;
+    --muted: #5b6169;
+    --border: #e3e5e8;
+    --track-a: #2f6f4f;
+    --track-a-bg: #eaf5ee;
+    --track-b: #5b3fa0;
+    --track-b-bg: #f1ecfa;
+    --warn-bg: #fff4e5;
+    --warn-border: #f0b429;
+    --skip-bg: #f2f2f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c;
+      --card-bg: #1f2227;
+      --text: #e8e9eb;
+      --muted: #a2a8b1;
+      --border: #33373d;
+      --track-a: #7fd6a6;
+      --track-a-bg: #16261d;
+      --track-b: #c3aef2;
+      --track-b-bg: #241c33;
+      --warn-bg: #332a12;
+      --warn-border: #caa23a;
+      --skip-bg: #24262b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c;
+    --card-bg: #1f2227;
+    --text: #e8e9eb;
+    --muted: #a2a8b1;
+    --border: #33373d;
+    --track-a: #7fd6a6;
+    --track-a-bg: #16261d;
+    --track-b: #c3aef2;
+    --track-b-bg: #241c33;
+    --warn-bg: #332a12;
+    --warn-border: #caa23a;
+    --skip-bg: #24262b;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  h2 { font-size: 1.15rem; margin-top: 40px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+  .notice {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 16px 0 32px;
+    font-size: 0.95rem;
+  }
+  .notice strong { display: block; margin-bottom: 6px; }
+  .track-empty {
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .track-a-bar { border-left: 4px solid var(--track-a); background: var(--track-a-bg); }
+  .track-b-bar { border-left: 4px solid var(--track-b); background: var(--track-b-bg); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { color: var(--muted); font-weight: 600; }
+  .skip-section { background: var(--skip-bg); border-radius: 10px; padding: 4px 16px 16px; }
+  .reason-block { font-size: 0.85rem; color: var(--muted); }
+  code { background: var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.85em; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+
+<h1>HR·비즈니스 다이제스트 — 2026-09-07 ~ 2026-09-14 (1차, 확장 시도 2026-08-15 ~ 2026-09-14)</h1>
+<p class="subtitle">기준일: 2026-09-14 · 1차 탐색 기준일 2026-09-07(7일) · 확장 기준일 2026-08-15(30일)</p>
+
+<div class="notice">
+  <strong>이번 주는 통과한 항목이 0건입니다 — 콘텐츠 부족이 아니라 검증 도구 접근 문제입니다.</strong>
+  이번 실행 환경에서 WebFetch(원문 직접 열람 도구)가 이 다이제스트가 참고하는
+  모든 출처 도메인(SHRM, Mercer, Gartner, LinkedIn, Deloitte, WEF, CIPD, HBR,
+  McKinsey, BCG, MIT Sloan Management Review 및 대체 경로로 검토한 Bloomberg,
+  Reuters, Fortune, AP 등)에 대해 네트워크 정책으로 차단되어 있었습니다
+  ("EGRESS_BLOCKED"). 이 스킬의 규칙상 검색 결과 스니펫만으로는 발행일이나
+  본문을 확인한 것으로 인정하지 않기 때문에, 실제로 원문을 열어보지 못한 후보를
+  "검증됨"으로 올리지 않았습니다. 아래 "확인했지만 게이트 이전에 빠진 후보"
+  섹션에 이번 주 검색으로 찾아낸 후보명만 참고용으로 남깁니다 — 이 목록은
+  발행일·본문이 확인되지 않았으므로 신뢰성 점수를 매기지 않았습니다.
+  다음 실행에서는 세션의 네트워크 egress 정책에 위 도메인들에 대한 접근을
+  허용해 주셔야 정상적으로 다이제스트를 생성할 수 있습니다.
+</div>
+
+<h2>Track A · HR 전문 리서치</h2>
+<div class="track-empty track-a-bar">
+  이번 주는 원문 검증을 통과한 카드가 없습니다. 원인은 위 안내와 같이 WebFetch
+  접근 차단이며, 신뢰성 게이트 기준 미달이 아닙니다.
+</div>
+
+<h2>Track B · HBR 비즈니스 아젠다</h2>
+<div class="track-empty track-b-bar">
+  이번 주는 원문 검증을 통과한 카드가 없습니다. 원인은 위 안내와 같이 WebFetch
+  접근 차단이며, 신뢰성 게이트 기준 미달이 아닙니다.
+</div>
+
+<h2>이번 주 비즈니스 영어 단어장</h2>
+<div class="track-empty">
+  단어장 예문은 반드시 실제로 WebFetch로 확인한 본문 문장을 그대로 인용해야
+  합니다(강휘 기준). 이번 주는 어떤 후보도 본문을 직접 열람하지 못했으므로,
+  근거 없는 예문을 지어내는 대신 단어장을 비워둡니다.
+</div>
+
+<h2>확인했지만 게이트 이전에 빠진 후보</h2>
+<p class="reason-block">
+  아래는 WebSearch로 존재를 확인했지만, WebFetch 접근 차단으로 발행일·본문을
+  직접 열람하지 못해 신뢰성 게이트 자체를 적용할 수 없었던 후보입니다.
+  제목·매체는 검색 결과에 나타난 대로 옮겼을 뿐, 원문에서 직접 확인한 것이
+  아니므로 발행일과 요약은 "미확인"으로 표시합니다.
+</p>
+<div class="skip-section">
+<table>
+  <tr><th>후보명</th><th>트랙</th><th>확인된 날짜</th><th>빠진 이유</th></tr>
+  <tr><td>SHRM — 2026 CHRO Benchmarking Data Brief: Belt-Tightening in HR in 2026</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(shrm.org) — 원문 확인 불가</td></tr>
+  <tr><td>Deloitte — 2026 Global Human Capital Trends</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(deloitte.com) — 원문 확인 불가</td></tr>
+  <tr><td>Gartner — The CHRO Report (Q3 2026 CHRO 과제)</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(gartner.com) — 원문 확인 불가</td></tr>
+  <tr><td>World Economic Forum — Four Futures for Jobs in the New Economy: AI and Talent in 2030</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(weforum.org) — 원문 확인 불가</td></tr>
+  <tr><td>CIPD — Five change management challenges people professionals are facing in 2026</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(cipd.org) — 원문 확인 불가</td></tr>
+  <tr><td>Mercer — Global Legislative Update, September 2026</td><td>A</td><td>미확인</td><td>WebFetch 접근 차단(mercer.com) — 원문 확인 불가</td></tr>
+  <tr><td>HBR — September/October 2026 issue 관련 기사 (매니저 유형, AI와 조직 등)</td><td>B</td><td>미확인</td><td>WebFetch 접근 차단(hbr.org) — 원문 확인 불가</td></tr>
+  <tr><td>McKinsey — The State of Organizations 2026 / McKinsey Global Tech Agenda 2026</td><td>B</td><td>미확인</td><td>WebFetch 접근 차단(mckinsey.com) — 원문 확인 불가</td></tr>
+  <tr><td>BCG Henderson Institute — 최신 아티클</td><td>B</td><td>미확인</td><td>WebFetch 접근 차단(bcg.com / bcghendersoninstitute.com) — 원문 확인 불가</td></tr>
+  <tr><td>MIT Sloan Management Review — 2026년 9월(폐간 전 마지막) 이슈 기사</td><td>B</td><td>미확인</td><td>WebFetch 접근 차단(sloanreview.mit.edu) — 원문 확인 불가</td></tr>
+</table>
+</div>
+
+<p class="reason-block" style="margin-top:32px;">
+  출처 안정성 메모(도현 기준): 이번 주는 개별 출처가 아니라 세션 전체의
+  네트워크 egress 정책이 위 표의 모든 도메인에 대한 WebFetch 접근을 구조적으로
+  거부했습니다. 특정 출처 한두 곳이 아니라 다이제스트가 참고하는 사실상 모든
+  출처가 동시에 막혀 있었으므로, 대체 출처를 찾아도 동일하게 차단될 가능성이
+  높습니다. 이 문제가 다음 주에도 반복되면 이 다이제스트를 실행하는 세션의
+  네트워크 정책(egress 허용 도메인 목록)을 조정해야 합니다.
+</p>
+
+</body>
+</html>
