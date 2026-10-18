@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR·비즈니스 다이제스트 — 2026-10-18</title>
+<!--
+  실행 메모 (모호성/이상 상황 기록, SKILL.md 절차 8·9번 관련):
+  이번 실행에서도 지난 네 차례 실행(2026-09-14, 2026-09-20, 2026-10-04,
+  2026-10-11)과 동일하게 WebFetch 도구가 이 다이제스트가 참고하는 모든
+  대상 도메인에서 DNS 조회 실패("getaddrinfo ENOTFOUND")로 막혔다. 이번
+  세션에서 실제로 WebFetch를 호출해 확인한 도메인은 shrm.org(www),
+  mercer.com(www), gartner.com(www), linkedin.com(www), deloitte.com(www2),
+  weforum.org(www), cipd.org(www), hbr.org, mckinsey.com(www),
+  sloanreview.mit.edu, bcg.com(www), reuters.com(www), fortune.com,
+  bloomberg.com(www), wikipedia.org(en), google.com(www), example.com
+  이며 전부 ENOTFOUND(또는 reuters.com·nytimes.com의 경우 "unable to fetch")로
+  실패했다. 대조군으로 anthropic.com을 같이 열어봤는데 이건 정상적으로
+  열렸다. 이번 주에는 추가로 Bash를 통해 같은 세션의 egress 프록시 상태를
+  직접 확인했는데, curl로 shrm.org·example.com에 연결을 시도하면 프록시가
+  "CONNECT tunnel failed, response 403"과 "connect_rejected"를 반환했다 —
+  즉 DNS 실패로 보였던 현상의 실제 원인은 이 세션의 네트워크 egress 정책이
+  허용 목록(주로 anthropic.com, GitHub, 패키지 레지스트리 등) 밖의 거의
+  모든 외부 호스트 연결 자체를 거부하고 있기 때문임을 이번에 처음으로
+  명확히 확인했다. read_documentation(environment.network)도 같은 설명을
+  확인해줬다: 이 세션이 속한 클라우드 환경의 "Network access" 설정이
+  제한적인 단계(Limited 등)로 되어 있고, 다이제스트가 필요로 하는 도메인이
+  Allowed domains 목록에 없다는 뜻이다. WebSearch는 정상 동작해 후보 기사
+  자체는 여러 건 찾았지만, SKILL.md 절차 3번과 저작권 안전 설계 원칙상
+  검색 스니펫만으로는 발행일·본문을 검증한 것으로 간주하지 않는다. 따라서
+  이번 실행에서도 신뢰성 게이트를 적용할 수 있었던 후보가 0건이다. 이는
+  "기준 미달"이 아니라 "이번 실행 환경에서 원문 검증 자체가 불가능했다"는
+  환경 설정 문제이므로, 확인한 것처럼 요약이나 단어장 예문을 지어내지
+  않고 있는 그대로 보고한다(도영·윤슬 기준에 따른 가장 보수적인 선택).
+  5번째 연속 동일 문제이며 이번에 처음으로 근본 원인(네트워크 정책 수준의
+  차단, 특정 출처 사이트 문제가 아님)을 명확히 특정했다.
+-->
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card-bg: #ffffff;
+    --text: #1f2328;
+    --muted: #5b6169;
+    --border: #e3e5e8;
+    --track-a: #2f6f4f;
+    --track-a-bg: #eaf5ee;
+    --track-b: #5b3fa0;
+    --track-b-bg: #f1ecfa;
+    --warn-bg: #fff4e5;
+    --warn-border: #f0b429;
+    --skip-bg: #f2f2f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c;
+      --card-bg: #1f2227;
+      --text: #e8e9eb;
+      --muted: #a2a8b1;
+      --border: #33373d;
+      --track-a: #7fd6a6;
+      --track-a-bg: #16261d;
+      --track-b: #c3aef2;
+      --track-b-bg: #241c33;
+      --warn-bg: #332a12;
+      --warn-border: #caa23a;
+      --skip-bg: #24262b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c;
+    --card-bg: #1f2227;
+    --text: #e8e9eb;
+    --muted: #a2a8b1;
+    --border: #33373d;
+    --track-a: #7fd6a6;
+    --track-a-bg: #16261d;
+    --track-b: #c3aef2;
+    --track-b-bg: #241c33;
+    --warn-bg: #332a12;
+    --warn-border: #caa23a;
+    --skip-bg: #24262b;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, "Noto Sans KR", sans-serif;
+    line-height: 1.6;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  h2 { font-size: 1.15rem; margin-top: 40px; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+  .notice {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 16px 0 32px;
+    font-size: 0.95rem;
+  }
+  .notice strong { display: block; margin-bottom: 6px; }
+  .track-empty {
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .track-a-bar { border-left: 4px solid var(--track-a); background: var(--track-a-bg); }
+  .track-b-bar { border-left: 4px solid var(--track-b); background: var(--track-b-bg); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th { color: var(--muted); font-weight: 600; }
+  .skip-section { background: var(--skip-bg); border-radius: 10px; padding: 4px 16px 16px; }
+  .reason-block { font-size: 0.85rem; color: var(--muted); }
+  code { background: var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.85em; }
+  a { color: inherit; }
+</style>
+</head>
+<body>
+
+<h1>HR·비즈니스 다이제스트 — 2026-10-11 ~ 2026-10-18 (1차, 확장 시도 2026-09-18 ~ 2026-10-18)</h1>
+<p class="subtitle">기준일: 2026-10-18 · 1차 탐색 기준일 2026-10-11(7일) · 확장 기준일 2026-09-18(30일)</p>
+
+<div class="notice">
+  <strong>이번 주도 통과한 항목이 0건입니다 — 콘텐츠 부족이 아니라 이 세션의 네트워크 접근 정책 문제이며, 지난 네 차례 실행에 이어 5번째로 반복되고 있습니다.</strong>
+  이번 실행에서 WebFetch(원문 직접 열람 도구)로 다이제스트 출처 도메인
+  (shrm.org, hbr.org, mckinsey.com, mercer.com, gartner.com, deloitte.com,
+  weforum.org, cipd.org, bcg.com, sloanreview.mit.edu 등)을 열어보려 했지만
+  전부 접근 실패로 거부됐습니다. 특정 출처만 막힌 게 아닌지 확인하려고 이
+  주제와 전혀 관련 없는 reuters.com, fortune.com, bloomberg.com, google.com,
+  wikipedia.org, example.com 같은 대조군 도메인도 같이 열어봤는데, 이것들도
+  전부 막혔고 anthropic.com만 정상적으로 열렸습니다. 이번 주에는 추가로
+  Bash에서 같은 세션의 egress 프록시 상태를 직접 확인했는데, shrm.org와
+  example.com 모두에 대해 프록시가 "CONNECT tunnel failed, response 403"
+  (connect_rejected)을 반환했습니다 — 즉 개별 출처 사이트 문제가 아니라, 이
+  세션이 속한 클라우드 환경의 Network access 설정이 제한적인 단계로
+  되어 있어 Allowed domains 목록 밖의 거의 모든 외부 호스트 연결 자체를
+  정책적으로 거부하고 있다는 뜻입니다(2026-09-14, 2026-09-20, 2026-10-04,
+  2026-10-11 실행과 동일한 결과이자 동일한 원인이며, 이번에 그 근본 원인을
+  처음으로 명확히 특정했습니다). 이 스킬의 규칙상 검색 결과 스니펫만으로는
+  발행일이나 본문을 확인한 것으로 인정하지 않기 때문에, 실제로 원문을
+  열어보지 못한 후보를 "검증됨"으로 올리지 않았습니다. 아래 "확인했지만
+  게이트 이전에 빠진 후보" 섹션에 이번 주 검색으로 찾아낸 후보명만 참고용으로
+  남깁니다 — 이 목록은 발행일·본문이 확인되지 않았으므로 신뢰성 점수를
+  매기지 않았습니다. 5번째 연속 동일 문제이므로, 이 세션이 속한 클라우드
+  환경의 설정(세션 제목 표시줄의 환경 메뉴 → Edit → Network access)에서
+  접근 수준을 넓히거나 위 출처 도메인들을 Allowed domains에 추가해 주셔야
+  다음 실행부터 정상적으로 다이제스트를 생성할 수 있습니다.
+</div>
+
+<h2>Track A · HR 전문 리서치</h2>
+<div class="track-empty track-a-bar">
+  이번 주는 원문 검증을 통과한 카드가 없습니다. 원인은 위 안내와 같이 이 세션의
+  네트워크 egress 정책에 의한 WebFetch 접근 차단이며, 신뢰성 게이트 기준
+  미달이 아닙니다.
+</div>
+
+<h2>Track B · HBR 비즈니스 아젠다</h2>
+<div class="track-empty track-b-bar">
+  이번 주는 원문 검증을 통과한 카드가 없습니다. 원인은 위 안내와 같이 이 세션의
+  네트워크 egress 정책에 의한 WebFetch 접근 차단이며, 신뢰성 게이트 기준
+  미달이 아닙니다.
+</div>
+
+<h2>이번 주 비즈니스 영어 단어장</h2>
+<div class="track-empty">
+  단어장 예문은 반드시 실제로 WebFetch로 확인한 본문 문장을 그대로 인용해야
+  합니다(강휘 기준). 이번 주는 어떤 후보도 본문을 직접 열람하지 못했으므로,
+  근거 없는 예문을 지어내는 대신 단어장을 비워둡니다.
+</div>
+
+<h2>확인했지만 게이트 이전에 빠진 후보</h2>
+<p class="reason-block">
+  아래는 WebSearch로 존재를 확인했지만, WebFetch 접근 차단으로 발행일·본문을
+  직접 열람하지 못해 신뢰성 게이트 자체를 적용할 수 없었던 후보입니다.
+  제목·매체·날짜는 검색 결과 스니펫에 나타난 대로만 옮겼을 뿐 원문에서 직접
+  확인한 것이 아니므로 "미검증"으로 표시했고, 신뢰성 점수는 매기지 않았습니다.
+</p>
+<div class="skip-section">
+<table>
+  <tr><th>후보명</th><th>트랙</th><th>확인된 날짜</th><th>빠진 이유</th></tr>
+  <tr><td>Gartner — "Build Your 2027 HR Strategy Around These Top CHRO Trends"(인사이트 abstract)</td><td>A</td><td>2026-10-05(스니펫 기준, 1차 기준일 2026-10-11보다 이전이라 1차에서는 제외되나 2차 30일 기준 내)</td><td>WebFetch 접근 차단(gartner.com) — 원문 확인 불가. 본문 자체도 Gartner 클라이언트 전용 페이월 뒤에 있어 공개 미리보기만으로는 저작권 안전 설계 기준(공개 초록만 사용)을 벗어날 가능성</td></tr>
+  <tr><td>Gartner — "Gartner Announces Gartner HR Symposium/Xpo 2026 in Sydney"(보도자료)</td><td>A</td><td>2026-10-06(스니펫 기준)</td><td>WebFetch 접근 차단(gartner.com) — 원문 확인 불가. 내용도 리서치 결과가 아닌 행사 홍보 보도자료로, 애초에 "근거 기반 여부" 기준에서 감점 소지</td></tr>
+  <tr><td>CIPD — 제3자 괴롭힘 방지 의무(2026-10-30 시행) 관련 가이드/웨비나 페이지</td><td>A</td><td>미확인(시행일은 2026-10-30으로 명시되나 게시일 불명)</td><td>WebFetch 접근 차단(cipd.org) — 원문 확인 불가, 리서치 아티클이 아니라 법규 안내/웨비나 페이지로 트랙 초점과도 다소 거리가 있음</td></tr>
+  <tr><td>Deloitte — "2026 Global Human Capital Trends: From Tensions to Tipping Points"(Oxford Economics 공동, 15개국 3,000명 이상 리더 서베이)</td><td>A</td><td>2026-03-04 발행(스니펫 기준, 1차·2차 기준일 모두 벗어남)</td><td>날짜 필터링(절차 5번)에서 제외 — 2차 기준일(2026-09-18)보다도 훨씬 이전. WebFetch도 접근 차단(deloitte.com)</td></tr>
+  <tr><td>Mercer — "Global Talent Trends 2026"(약 12,000명 경영진·HR 리더 서베이)</td><td>A</td><td>2026-02 발행(스니펫 기준, 1차·2차 기준일 모두 벗어남)</td><td>날짜 필터링에서 제외 — 2차 기준일보다 이전. WebFetch도 접근 차단(mercer.com)</td></tr>
+  <tr><td>WEF — The Future of Jobs Report(차기 호)</td><td>A</td><td>확인 불가 — 검색 결과상 최신판은 2025-01-07 발행본이며 2026년 신규 발행 자체를 확인하지 못함</td><td>격년 발행 주기상 2026년 신규 발행이 없는 것으로 보여 이번 주 후보에서 제외(날짜 자체가 없음)</td></tr>
+  <tr><td>SHRM — "October 2026 Labor Market Review: Roller Coaster Continues"</td><td>A</td><td>스니펫 기준 2026년 10월(정확한 일자 미확인)</td><td>WebFetch 접근 차단(shrm.org) — 원문 확인 불가</td></tr>
+  <tr><td>HBR — Harvard Business Review 2026년 9/10월호 수록 기사, 예: "5 Ways to Wield Influence When You Lack Authority"(Pamela Meyer)</td><td>B</td><td>2026년 9~10월호(특정일 불명)</td><td>날짜 자체가 특정일로 잡히지 않아(절차 5번) 기준일 적용 불가 + WebFetch 접근 차단(hbr.org)으로 원문 확인도 불가</td></tr>
+  <tr><td>HBR — "HBR's 10 Must Reads 2027"에 수록된 "The Hidden Beliefs That Hold Leaders Back"(Muriel M. Wilkins)</td><td>B</td><td>도서/오디오북 등록 기준 2026-10-06(원문 최초 게재일 미확인, 단행본 재수록 가능성)</td><td>WebFetch 접근 차단(hbr.org) — 원문 최초 게재일·본문 확인 불가</td></tr>
+  <tr><td>McKinsey — McKinsey Quarterly 관련 "Then &amp; Now: 100 years of cutting through the noise" 등 창립 기념 콘텐츠</td><td>B</td><td>미확인(날짜 불명)</td><td>WebFetch 접근 차단(mckinsey.com) — 원문 확인 불가, 날짜도 특정되지 않음</td></tr>
+  <tr><td>BCG Henderson Institute — 신규 리서치 노트(검색상 제목·날짜 특정 실패)</td><td>B</td><td>미확인</td><td>WebFetch 접근 차단(bcg.com) — 이번 주 검색으로는 구체적인 신규 아티클 제목·날짜를 특정하지 못함</td></tr>
+</table>
+</div>
+
+<p class="reason-block" style="margin-top:32px;">
+  출처 안정성 메모(도현 기준): 이번 주도 개별 출처가 아니라 세션 전체의
+  네트워크 egress 정책이 위 표의 모든 도메인에 대한 WebFetch 접근을
+  구조적으로 거부했습니다(이 주제와 무관한 reuters.com, fortune.com,
+  bloomberg.com, google.com, wikipedia.org, example.com까지 막혔고
+  anthropic.com만 열렸다는 점, 그리고 Bash를 통한 프록시 상태 확인에서
+  shrm.org·example.com 모두 "CONNECT tunnel failed, response 403"
+  (connect_rejected)로 거부된 점이 그 증거입니다). 2026-09-14, 2026-09-20,
+  2026-10-04, 2026-10-11 실행에 이어 이번이 5번째로 같은 문제가
+  발생했으며, 이번에 처음으로 근본 원인이 개별 출처 사이트의 차단이 아니라
+  이 세션이 속한 클라우드 환경의 Network access 설정(제한적 접근 단계) 때문임을
+  명확히 확인했습니다. 특정 출처를 다른 출처로 교체하는 것으로는 해결되지
+  않습니다. 이 다이제스트를 실행하는 세션(또는 이 세션을 생성하는 환경)의
+  네트워크 정책(세션 제목 표시줄의 환경 메뉴 → Edit → Network access)에서
+  접근 수준을 더 넓히거나, 아래 도메인을 Allowed domains에 추가해 주셔야
+  합니다: shrm.org, mercer.com, gartner.com, linkedin.com, deloitte.com,
+  weforum.org, cipd.org, hbr.org, mckinsey.com, bcg.com,
+  sloanreview.mit.edu (및 대체 경로로 쓰는 bloomberg.com, reuters.com,
+  fortune.com, ft.com, wsj.com, pwc.com, manpowergroup.com).
+</p>
+
+</body>
+</html>
